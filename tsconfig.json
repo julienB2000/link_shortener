@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": true /* Active TOUTES les vérifications strictes */,
+    "noUncheckedIndexedAccess": true /* LA CLÉ : Force à vérifier si array[0] existe */,
+    "noImplicitAny": true /* Interdit de laisser des variables sans type */,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES2023",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
