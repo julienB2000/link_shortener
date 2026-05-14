@@ -28,5 +28,3 @@ export class LinksService {
     return returnedUrl[0];
   }
 }
-
-/**MEttre en base tout et return le generate url */

@@ -5,5 +5,3 @@ export class CreateLinkDto {
   @IsNotEmpty()
   url!: string;
 }
-
-//partial type

@@ -9,3 +9,12 @@ export const links = pgTable('links', {
 });
 
 export type Link = InferSelectModel<typeof links>;
+
+export const user = pgTable('user', {
+  id: serial('id').primaryKey(),
+  name: text('username').default('user').notNull(),
+  email: text('email').notNull().unique(),
+  hashedPassword: text('password').notNull(),
+});
+
+export type user = InferSelectModel<typeof user>;
