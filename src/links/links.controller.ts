@@ -6,14 +6,17 @@ import {
   Param,
   Post,
   Redirect,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateLinkDto } from './DTO/create-link.dto';
 import { LinksService } from './links.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('links')
 export class LinksController {
   constructor(private linkService: LinksService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async postUrl(@Body() createLinkDto: CreateLinkDto) {
     const url = createLinkDto.url;

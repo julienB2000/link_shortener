@@ -50,6 +50,29 @@ describe('LinksService', () => {
       expect(mockDb.values).toHaveBeenCalledWith({ url: 'https://example.com', shortCode: 'abc123' });
       expect(result).toEqual(mockLink);
     });
+
+    it('should retry on collision and succeed on second attempt', async () => {
+      const mockLink = { id: 1, url: 'https://example.com', shortCode: 'xyz789' };
+      vi.mocked(randtoken.generate).mockReturnValue('xyz789');
+      mockDb.returning
+        .mockRejectedValueOnce(new Error('duplicate key'))
+        .mockResolvedValueOnce([mockLink]);
+
+      const result = await service.shortenerUrl('https://example.com');
+
+      expect(mockDb.returning).toHaveBeenCalledTimes(2);
+      expect(result).toEqual(mockLink);
+    });
+
+    it('should throw after 5 failed attempts', async () => {
+      vi.mocked(randtoken.generate).mockReturnValue('abc123');
+      mockDb.returning.mockRejectedValue(new Error('duplicate key'));
+
+      await expect(service.shortenerUrl('https://example.com')).rejects.toThrow(
+        'Failed to generate a unique short code',
+      );
+      expect(mockDb.returning).toHaveBeenCalledTimes(5);
+    });
   });
 
   describe('returnUrlByCode', () => {

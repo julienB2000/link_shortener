@@ -10,13 +10,16 @@ export class LinksService {
     @Inject('DATABASE_CONNECTION') private db: NodePgDatabase<typeof schema>,
   ) {}
   async shortenerUrl(url: string): Promise<schema.Link | undefined> {
-    const token = randtoken.generate(6);
-
-    const returnedUrl = await this.db
-      .insert(schema.links)
-      .values({ url: url, shortCode: token })
-      .returning();
-    return returnedUrl[0];
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const token = randtoken.generate(6);
+      const result = await this.db
+        .insert(schema.links)
+        .values({ url, shortCode: token })
+        .returning()
+        .catch(() => null);
+      if (result) return result[0];
+    }
+    throw new Error('Failed to generate a unique short code');
   }
 
   async returnUrlByCode(code: string): Promise<schema.Link | undefined> {
